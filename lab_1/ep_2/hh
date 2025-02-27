@@ -1,0 +1,50 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import imageio
+import os
+
+
+def load_data(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    frames = []
+    for i in range(0, len(lines), 2):
+        if i + 1 >= len(lines):
+            break
+        x_values = list(map(float, lines[i].strip().split()))
+        y_values = list(map(float, lines[i + 1].strip().split()))
+        frames.append((x_values, y_values))
+
+    return frames
+
+
+def plot_data(frames):
+    image_files = []
+    for idx, (x, y) in enumerate(frames):
+        file_name = f"frame_{idx + 1}.png"
+        image_files.append(file_name)
+        plt.figure(figsize=(8, 5))
+        plt.plot(x, y, marker='o', linestyle='-', color='b')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.title(f'Frame {idx + 1}')
+        plt.grid()
+        plt.savefig(file_name)
+        plt.close()
+    return image_files
+
+
+def create_gif(image_files, output_file="график.gif", duration=1.0):
+    """
+    гифка через имаджеио
+    """
+    images = [imageio.imread(file) for file in image_files]
+    imageio.mimsave(output_file, images, duration=duration)
+
+
+# тело
+file_path_2 = 'C:/Users/Михаил/Desktop/хрюникс/4сем/2.dat'
+frames = load_data(file_path_2)
+image_files = plot_data(frames)
+create_gif(image_files)
