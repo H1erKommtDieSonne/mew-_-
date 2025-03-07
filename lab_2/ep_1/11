@@ -1,0 +1,62 @@
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+import os
+
+# прикольно что с русскими символами в пути не работает
+# c таким кайфом затуп на пару часов
+image_paths = [
+    "C:/images/lunar01_raw.jpg",
+    "C:/images/lunar02_raw.jpg",
+    "C:/images/lunar03_raw.jpg"
+]
+
+
+# Функция обработки
+def new__image(image_path):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+
+    blurred = cv2.GaussianBlur(image, (5, 5), 0)
+
+    # контраст
+    min_val = np.min(blurred)
+    max_val = np.max(blurred)
+    contrast_enhanced = ((blurred - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+
+    # Бинаризация
+    _, binary_image = cv2.threshold(contrast_enhanced, 127, 255, cv2.THRESH_BINARY)
+
+    return image, blurred, contrast_enhanced, binary_image
+
+
+
+results = [new__image(path) for path in image_paths]
+
+
+fig, axes = plt.subplots(3, 4, figsize=(20, 15))
+titles = ["Оригинал", "Размытие", "Контраст", "Бинаризация"]
+
+for i, result in enumerate(results):
+    for j, img in enumerate(result):
+        axes[i, j].imshow(img, cmap='gray')
+        axes[i, j].set_title(f"{titles[j]} {i + 1}")
+        axes[i, j].axis("off")
+
+plt.show()
+
+
+output_paths = [
+    "C:/images/lunar01_well_done.png",
+    "C:/images/lunar02_well_done.png",
+    "C:/images/lunar03_well_done.png"
+]
+
+output_dir = "C:/images"
+os.makedirs(output_dir, exist_ok=True)
+
+output_paths = [
+    os.path.join(output_dir, "lunar01_well_done.png"),
+    os.path.join(output_dir, "lunar02_well_done.png"),
+    os.path.join(output_dir, "lunar03_well_done.png"),
+]
