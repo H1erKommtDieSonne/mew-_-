@@ -29,6 +29,7 @@ def plot_data(df, file_name):
     plt.title(f'График данных {file_name}')
     plt.legend()
     plt.grid()
+    plt.axis('equal')
     plt.savefig(f"{file_name}.png")
     plt.close()
 
