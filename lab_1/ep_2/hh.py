@@ -18,20 +18,39 @@ def load_data(file_path):
 
     return frames
 
+def babadzaki(frames):
 
-def plot_data(frames):
+    all_x = [x for frame in frames for x in frame[0]]
+    all_y = [y for frame in frames for y in frame[1]]
+
+    x_min, x_max = min(all_x), max(all_x)
+    y_min, y_max = min(all_y), max(all_y)
+
+    return x_min, x_max, y_min, y_max
+    
+
+
+def plot_data(frames, x_min, x_max, y_min, y_max):
+
     image_files = []
     for idx, (x, y) in enumerate(frames):
         file_name = f"frame_{idx + 1}.png"
         image_files.append(file_name)
+
         plt.figure(figsize=(8, 5))
         plt.plot(x, y, marker='o', linestyle='-', color='b')
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.title(f'Frame {idx + 1}')
         plt.grid()
+
+
+        plt.xlim(x_min, x_max)
+        plt.ylim(y_min, y_max)
+
         plt.savefig(file_name)
         plt.close()
+
     return image_files
 
 
@@ -46,5 +65,6 @@ def create_gif(image_files, output_file="график.gif", duration=1.0):
 # тело
 file_path_2 = 'C:/Users/Михаил/Desktop/хрюникс/4сем/2.dat'
 frames = load_data(file_path_2)
-image_files = plot_data(frames)
+x_min, x_max, y_min, y_max = babadzaki(frames)
+image_files = plot_data(frames, x_min, x_max, y_min, y_max)
 create_gif(image_files)
